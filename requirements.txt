@@ -1,0 +1,14 @@
+cffi==1.14.0
+click==7.1.2
+cryptography==2.9.2
+javaobj-py3==0.4.1
+pyasn1==0.4.8
+pyasn1-modules==0.2.8
+pycparser==2.20
+pycryptodomex==3.9.7
+pycurl==7.43.0.5
+pyjks==20.0.0
+pyOpenSSL==19.1.0
+six==1.15.0
+twofish==0.3.0
+PyInstaller==3.6
