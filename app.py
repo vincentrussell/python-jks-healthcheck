@@ -1,6 +1,8 @@
 import click
 import jks
+import ssl
 import OpenSSL
+import select
 from socket import AF_INET, AF_INET6, error, socket
 from os import path
 from sys import exit
@@ -26,7 +28,17 @@ def start(keystore, keystorealias, keypass, keystorepassphrase, hostandport, tim
     sslConnection = Connection(sslContext, socket)
     sslConnection.set_connect_state()
     sslConnection.set_tlsext_host_name(hostandport[0].encode('utf-8'))
-    sslConnection.do_handshake()
+    while True:
+        try:
+            sslConnection.do_handshake()
+        except OpenSSL.SSL.WantReadError:
+            rd, _, _ = select.select([socket], [], [], socket.gettimeout())
+            if not rd:
+                raise timeout('select timed out')
+            continue
+        except OpenSSL.SSL.Error as e:
+            raise ssl.SSLError('bad handshake: %r' % e)
+        break
     sslContext.set_timeout(timeout)
     sslConnection.send(b"GET / HTTP/1.0\r\n\r\n")
     socket.recv(1024)
@@ -82,7 +94,7 @@ def verify(keystore, keystorealias, keypass, keystorepassphrase, hostandport):
     if not len(hostandport) == 2:
         print("hostAndPort is not in proper format, i.e:localhost:443")
     if not hostandport[1].isnumeric():
-        print("hostAndPort is not in proper format.  The port is not a number.")
+        print("hostAndPort is not in proper format.  The port is not a number: " + hostandport[1])
 
 if __name__ == '__main__':
     start()
