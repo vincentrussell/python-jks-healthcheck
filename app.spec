@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['app.py'],
-             pathex=['env/lib/python3.6/site-packages', 'env/lib64/python3.6/site-packages', '/home/vrussell/Workspace/python-jks'],
+             pathex=['env/lib/python3.6/site-packages', 'env/lib64/python3.6/site-packages', '.'],
              binaries=[],
              datas=[],
              hiddenimports=[],
